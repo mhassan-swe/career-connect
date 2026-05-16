@@ -1,8 +1,9 @@
 import Profile from "../models/profile.model.js"
 import User from "../models/user.model.js"
 import bcrypt from "bcrypt"
+import crypto from "crypto"
 
-const register = async (req,res) => {
+export const register = async (req,res) => {
     try{
         const {name,email,password,userName} = req.body;
         if(!name || !email || !password || !userName ){
@@ -38,4 +39,38 @@ const register = async (req,res) => {
 
 }
 
-export default register;
+
+
+
+export const login =async (req,res) => {
+    try{
+        const {email,password} = req.body;
+        if(!email || ! password){
+            return res.status(400).json({message:"All fields are required"});
+
+        }
+        
+        const user = await User.findOne({
+            email
+        });
+
+        if(!user){
+            return res.status(404).json({message:"user do not exit"});
+        }
+
+        const isMatch = await bcrypt.compare( password, user.password );
+        if(!isMatch){
+            return res.status(400).json({message:"invalid Credentials"});
+        }
+
+        const token = await crypto.randomBytes(32).toString("hex");
+
+        await User.findByIdAndUpdate ({_id:user.id} ,{token})
+        return res.json({token})
+        
+    } 
+
+    catch(error){
+        res.status(400).json({message:error.message})
+    }
+}

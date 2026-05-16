@@ -7,3 +7,14 @@ Content-Type: application/json
     "password": "secret123",
     "userName": "johndoe"
 }
+###
+
+POST http://localhost:5001/login
+Content-Type: application/json
+
+{
+  "email": "john.com",
+  "password": "jvjk"
+}
+
+
