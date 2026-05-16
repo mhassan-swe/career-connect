@@ -2,17 +2,20 @@ import express from "express";
 import cors from "cors"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
-import postRouter from "./routes/posts.routes.js";
+import postRoutes from "./routes/posts.routes.js";
+import userRoutes from "./routes/user.routes.js"
 
 dotenv.config();
 
 const app = express();
 
-app.use(postRouter)
+app.use(express.json());
+
+app.use(postRoutes)
+app.use(userRoutes)
 
 app.use(cors());
 
-app.use(express.json());
 
 const start =async () =>{
   try{
