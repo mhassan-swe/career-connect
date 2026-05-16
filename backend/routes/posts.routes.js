@@ -1,10 +1,10 @@
 import { Router } from "express"
 import activeCheck from "../controllers/post.controller.js";
-const postRoutes = Router();
+const postRouter = Router();
 
 
 
 
-postRoutes.route('/').get(activeCheck);
+postRouter.route('/').get(activeCheck);
 
 export default postRoutes;

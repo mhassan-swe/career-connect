@@ -74,3 +74,14 @@ export const login =async (req,res) => {
         res.status(400).json({message:error.message})
     }
 }
+
+
+const uploadProfilePicture = (req,res) => {
+    const {token} = req.body;
+    try{
+        
+    }
+    catch(error){
+
+    } 
+}
