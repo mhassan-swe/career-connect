@@ -42,7 +42,7 @@ export const register = async (req,res) => {
 
 
 
-export const login =async (req,res) => {
+export const login = async (req,res) => {
     try{
         const {email,password} = req.body;
         if(!email || ! password){
@@ -76,12 +76,22 @@ export const login =async (req,res) => {
 }
 
 
-const uploadProfilePicture = (req,res) => {
+export const uploadProfilePicture = async(req,res) => {
     const {token} = req.body;
     try{
-        
+
+        const user = await User.findOne({token:token})
+
+        if(!user){
+            res.status(404).json({message:"user does not exist"})
+        }
+
+        user.profilePicture = req.file.filename;
+        await user.save();
     }
     catch(error){
+        res.status(500).json({message:message.error})
 
     } 
 }
+

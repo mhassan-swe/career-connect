@@ -7,4 +7,4 @@ const postRouter = Router();
 
 postRouter.route('/').get(activeCheck);
 
-export default postRoutes;
+export default postRouter;

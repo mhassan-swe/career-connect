@@ -1,5 +1,5 @@
 import { Router } from "express"
-import {register,login} from "../controllers/user.controller.js"
+import  {register , login ,uploadProfilePicture} from "../controllers/user.controller.js"
 import multer from "multer"
 
 
@@ -24,4 +24,4 @@ userRouter.route('/upload_profile_picture').post(upload.single ('profile_picture
 userRouter.route('/register').post(register);
 userRouter.route('/login').post(login);
 
-export default userRoutes;
+export default userRouter;
