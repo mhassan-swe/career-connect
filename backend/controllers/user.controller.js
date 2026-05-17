@@ -95,3 +95,22 @@ export const uploadProfilePicture = async(req,res) => {
     } 
 }
 
+export const UpdateUserProfile = async () => {
+    try{
+        const {token, ...newUserData} = req.body;
+
+        const user = await User.findOne({token:token})
+
+        if(!user){
+            res.status(404).json({message:"User not found"})
+        }
+
+        const {userName,email} = newUserData;
+        
+        const existingUser =await User.findOne({$or:[{userName},{email}]});
+        
+    }
+    catch(error){
+        res.status(500).json({message:message.error})
+    }
+}
