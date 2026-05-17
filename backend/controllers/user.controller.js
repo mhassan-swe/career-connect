@@ -108,7 +108,17 @@ export const UpdateUserProfile = async () => {
         const {userName,email} = newUserData;
         
         const existingUser =await User.findOne({$or:[{userName},{email}]});
-        
+
+        if(existingUser){
+            if(existingUser || string(existingUser._id) !== string(user._id)){
+                 res.status(404).json({message:"User already exist"})
+            }
+        }
+
+        Object.assign(user,newUserData);
+
+        await user.save();
+
     }
     catch(error){
         res.status(500).json({message:message.error})
