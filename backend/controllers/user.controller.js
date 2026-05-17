@@ -90,12 +90,12 @@ export const uploadProfilePicture = async(req,res) => {
         await user.save();
     }
     catch(error){
-        res.status(500).json({message:message.error})
+        res.status(500).json({message:error.message})
 
     } 
 }
 
-export const UpdateUserProfile = async () => {
+export const UpdateUserProfile = async (req,res) => {
     try{
         const {token, ...newUserData} = req.body;
 
@@ -121,6 +121,6 @@ export const UpdateUserProfile = async () => {
 
     }
     catch(error){
-        res.status(500).json({message:message.error})
+        res.status(500).json({message:error.message})
     }
 }
