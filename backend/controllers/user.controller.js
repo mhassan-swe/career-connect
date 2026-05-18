@@ -140,11 +140,32 @@ export const userAndProfile =async (req,res) => {
     }
     catch(error){
         return res.status(500).json({message:error.message})
-
-    }
-
-    
+    }   
 }
 
+
+export const updateProfileData = async (req,res) => {
+    try{
+        const { token , ...newProfileData } = req.body;
+
+        const user = await User.findOne({token});
+        if(!user){
+            return res.status(404).json({message:"user does not exist"});
+        }
+
+        const profileToUpdate = await Profile.findOne({userId:user._id});
+        if(!profileToUpdate){
+            return res.status(404).json({message:"user profile does not exist"});
+        }
+
+        Object.assign(profileToUpdate,newProfileData)
+
+        profileToUpdate.save();
+
+    }
+    catch(error){
+         res.status(500).json({message:error.message})
+    }
+}
 
 
