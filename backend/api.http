@@ -2,10 +2,10 @@ POST http://localhost:5001/register
 Content-Type: application/json
 
 {
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "secret123",
-    "userName": "johndoe"
+    "name": "Jhon",
+    "email": "joh@example.com",
+    "password": "secret12",
+    "userName": "joh"
 }
 ###
 
@@ -13,8 +13,8 @@ POST http://localhost:5001/login
 Content-Type: application/json
 
 {
-  "email": "john@example.com",
-  "password": "secret123"
+  "email": "joh@example.com",
+  "password": "secret12"
 }
 
 #####
@@ -22,7 +22,7 @@ POST http://localhost:5001/get_user_and_profile
 Content-Type: application/json
 
 {
-  "token":"a00c04ec0dec01e3d3c4a979ee1fb8408d9af04dbc9dff74eef7f43c884b0bd8",
+  "token":"f5307c026715a9b030211d969ba3c6df1ceb1c9612ff1481cba43b2a1d19c4f1",
   "name": "John Doe",
   "email": "john@example.com",
   "userName": "johndoe",
@@ -35,6 +35,10 @@ POST http://localhost:5001/update_profile_data
 Content-Type: application/json
 
 {
-  "token": "a00c04ec0dec01e3d3c4a979ee1fb8408d9af04dbc9dff74eef7f43c884b0bd8",
-  "bio": "Backend"
+  "token": "f5307c026715a9b030211d969ba3c6df1ceb1c9612ff1481cba43b2a1d19c4f1",
+  "bio": "Back"
 }
+
+###
+GET http://localhost:5001/get_all_users
+
