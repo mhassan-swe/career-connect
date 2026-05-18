@@ -2,6 +2,23 @@ import Profile from "../models/profile.model.js"
 import User from "../models/user.model.js"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
+import { createWriteStream } from "fs"
+
+import PDFDocument from "pdfkit"
+import fs from "fs"
+
+
+
+const convertUserDataToPDF = async (userData) => {
+    const doc = PDFDocument()
+
+    const outputPath = crypto.randomBytes(32).toString('hex') + '.pdf'
+
+    const stream = createWriteStream('./uploads' + outputPath)
+
+    doc.pipe(stream)
+}
+
 
 export const register = async (req,res) => {
     try{
@@ -177,7 +194,7 @@ export const updateProfileData = async (req,res) => {
 
 export const getAllUsersProfile = async (req,res) => {
     try{
-        const profiles = await Profile.find().populate('userId','name username profilePicture');
+        const profiles = await Profile.find().populate('userId','name username email profilePicture');
 
         return res.json({profiles});
     }
@@ -186,3 +203,19 @@ export const getAllUsersProfile = async (req,res) => {
     }
 }
 
+
+export const downloadProfile = async (req,res) => {
+    try{
+        const user_id = req.query.id;
+                
+        const userProfiles = await Profile.findOne({userId:user_id}).populate('userId','name username email profilePicture');
+
+        let a = await convetUserDataToPDF(userProfile)
+
+        return res.json({message:a})
+
+
+
+    }
+    catch(error){}
+}

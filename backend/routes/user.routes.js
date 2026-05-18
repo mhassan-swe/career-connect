@@ -1,5 +1,6 @@
 import { Router } from "express"
-import  {register , login ,uploadProfilePicture, UpdateUserProfile, userAndProfile, updateProfileData ,getAllUsersProfile} from "../controllers/user.controller.js"
+import  {register , login ,uploadProfilePicture, UpdateUserProfile} from "../controllers/user.controller.js"
+import  {userAndProfile, updateProfileData ,getAllUsersProfile ,downloadProfile} from "../controllers/user.controller.js"
 import multer from "multer"
 
 
@@ -31,8 +32,9 @@ userRouter.route('/get_user_and_profile').get(userAndProfile).post(userAndProfil
 
 userRouter.route('/update_profile_data').post(updateProfileData)
 
-userRouter.route('/get_all_users').get(getAllUsersProfile)
+userRouter.route('/user/get_all_users').get(getAllUsersProfile)
 
+userRouter.route('/user/download_resume').get(downloadProfile)
 
 
 
