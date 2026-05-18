@@ -134,9 +134,13 @@ export const userAndProfile =async (req,res) => {
         }
 
         const userProfile = await Profile.findOne({userId: user._id}) 
-        .populate('userId',"name username email profilePicture ") //populate is used to fetch related documents from another collection using reference (ObjectId). It can also be used to select specific fields.
+        .populate('userId',"name userName email profilePicture ") //populate is used to fetch related documents from another collection using reference (ObjectId). It can also be used to select specific fields.
 
-        return res.json("profile",userProfile);
+        if(!userProfile){
+            return res.status(404).json({message:"User profile not found"});
+        }
+
+        return res.json({profile:userProfile});
     }
     catch(error){
         return res.status(500).json({message:error.message})
@@ -160,11 +164,13 @@ export const updateProfileData = async (req,res) => {
 
         Object.assign(profileToUpdate,newProfileData)
 
-        profileToUpdate.save();
+        await profileToUpdate.save();
+
+        return res.json({message:"Profile updated", profile: profileToUpdate});
 
     }
     catch(error){
-         res.status(500).json({message:error.message})
+         return res.status(500).json({message:error.message})
     }
 }
 

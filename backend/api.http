@@ -17,11 +17,24 @@ Content-Type: application/json
   "password": "secret123"
 }
 
-
-GET http://localhost:5001/get_user_and_profile
+#####
+POST http://localhost:5001/get_user_and_profile
 Content-Type: application/json
 
 {
-  "token": "6f7eb945bf6b7cd7866038e3f74e4f842abe8419aa00fc63db1691f4a9f6a564"
+  "token":"a00c04ec0dec01e3d3c4a979ee1fb8408d9af04dbc9dff74eef7f43c884b0bd8",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "userName": "johndoe",
+  "profilePicture":""
+
 }
 
+#####
+POST http://localhost:5001/update_profile_data
+Content-Type: application/json
+
+{
+  "token": "a00c04ec0dec01e3d3c4a979ee1fb8408d9af04dbc9dff74eef7f43c884b0bd8",
+  "bio": "Backend"
+}
