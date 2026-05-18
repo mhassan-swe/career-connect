@@ -18,3 +18,10 @@ Content-Type: application/json
 }
 
 
+GET http://localhost:5001/get_user_and_profile
+Content-Type: application/json
+
+{
+  "token": "6f7eb945bf6b7cd7866038e3f74e4f842abe8419aa00fc63db1691f4a9f6a564"
+}
+

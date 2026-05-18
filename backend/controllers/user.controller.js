@@ -71,7 +71,7 @@ export const login = async (req,res) => {
     } 
 
     catch(error){
-        res.status(400).json({message:error.message})
+       return res.status(400).json({message:error.message})
     }
 }
 
@@ -83,44 +83,68 @@ export const uploadProfilePicture = async(req,res) => {
         const user = await User.findOne({token:token})
 
         if(!user){
-            res.status(404).json({message:"user does not exist"})
+          return  res.status(404).json({message:"user does not exist"})
         }
 
         user.profilePicture = req.file.filename;
         await user.save();
     }
     catch(error){
-        res.status(500).json({message:error.message})
+        return res.status(500).json({message:error.message})
 
     } 
 }
 
 export const UpdateUserProfile = async (req,res) => {
     try{
-        const {token, ...newUserData} = req.body;
+        const {token, ...newUserData} = req.body; //{...newUserData} we copy/put all the variable from body to newUserData except token (spreading)
 
         const user = await User.findOne({token:token})
 
         if(!user){
-            res.status(404).json({message:"User not found"})
+            return res.status(404).json({message:"User not found"})
         }
 
-        const {userName,email} = newUserData;
-        
-        const existingUser =await User.findOne({$or:[{userName},{email}]});
+        const {userName,email} = newUserData; // Destructuring to extract required properties from object
+        const existingUser =await User.findOne({$or:[{userName},{email}]}); 
 
         if(existingUser){
-            if(existingUser || string(existingUser._id) !== string(user._id)){
-                 res.status(404).json({message:"User already exist"})
+            if(existingUser || String(existingUser._id) !== String(user._id)){
+                 return res.status(404).json({message:"User already exist"})
             }
         }
 
-        Object.assign(user,newUserData);
+        Object.assign(user,newUserData); // copy all properties from newUserData to user
 
         await user.save();
 
     }
     catch(error){
-        res.status(500).json({message:error.message})
+       return res.status(500).json({message:error.message})
     }
 }
+
+export const userAndProfile =async (req,res) => {
+    try{
+        const { token } = req.body;
+
+        const user = await User.findOne({token});
+        if(!user){
+            return res.status(404).json({message:"User not found"})
+        }
+
+        const userProfile = await Profile.findOne({userId: user._id}) 
+        .populate('userId',"name username email profilePicture ") //populate is used to fetch related documents from another collection using reference (ObjectId). It can also be used to select specific fields.
+
+        return res.json("profile",userProfile);
+    }
+    catch(error){
+        return res.status(500).json({message:error.message})
+
+    }
+
+    
+}
+
+
+
