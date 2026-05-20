@@ -9,12 +9,12 @@ import fs from "fs"
 
 
 
-const convertUserDataToPDF = async (userData) => {
-    const doc = PDFDocument()
+const convertUserDataToPDF = (userData) => {
+    const doc =new PDFDocument()
 
     const outputPath = crypto.randomBytes(32).toString('hex') + '.pdf'
 
-    const stream = createWriteStream('./uploads' + outputPath)
+    const stream = createWriteStream('./uploads/' + outputPath)
 
     doc.pipe(stream)
 
@@ -23,15 +23,15 @@ const convertUserDataToPDF = async (userData) => {
     doc.fontSize(14).text(`UserName :${userData.userId.userName}`)
     doc.fontSize(14).text(`Email :${userData.userId.email}`)
     doc.fontSize(14).text(`Bio :${userData.userId.bio}`)
-    doc.fontSize(14).text(`Current Postion :${userData.userId.currentPosition}`)
+    doc.fontSize(14).text(`Current Postion :${userData.userId.currentPost}`)
 
 
 
     doc.fontSize(14).text(`Past Work :`)
     userData.pastWork.forEach((work,index) => {
-        doc.fontSize(14).text(`Company Name :${work.companyName}`);
+        doc.fontSize(14).text(`Company Name :${work.company}`);
         doc.fontSize(14).text(`Postion :${work.Position}`);
-        doc.fontSize(14).text(`Years :${work.year}`);
+        doc.fontSize(14).text(`Years :${work.years}`);
     });
 
     doc.end()
@@ -229,9 +229,9 @@ export const downloadProfile = async (req,res) => {
     try{
         const user_id = req.query.id;
                 
-        const userProfiles = await Profile.findOne({userId:user_id}).populate('userId','name username email profilePicture');
+        const userProfile = await Profile.findOne({userId:user_id}).populate('userId','name username email profilePicture');
 
-        let outputPath = await convetUserDataToPDF(userProfile)
+        let outputPath = await convertUserDataToPDF(userProfile)
 
         return res.json({message:outputPath})
 
