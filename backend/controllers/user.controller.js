@@ -17,6 +17,27 @@ const convertUserDataToPDF = async (userData) => {
     const stream = createWriteStream('./uploads' + outputPath)
 
     doc.pipe(stream)
+
+    doc.image(`/uploads${userData,userId,profilePicture}`,{align:"center", width:100 })
+    doc.fontSize(14).text(`Name :${userData.userId.name}`)
+    doc.fontSize(14).text(`UserName :${userData.userId.userName}`)
+    doc.fontSize(14).text(`Email :${userData.userId.email}`)
+    doc.fontSize(14).text(`Bio :${userData.userId.bio}`)
+    doc.fontSize(14).text(`Current Postion :${userData.userId.currentPosition}`)
+
+
+
+    doc.fontSize(14).text(`Past Work :`)
+    userData.pastWork.forEach((work,index) => {
+        doc.fontSize(14).text(`Company Name :${work.companyName}`);
+        doc.fontSize(14).text(`Postion :${work.Position}`);
+        doc.fontSize(14).text(`Years :${work.year}`);
+    });
+
+    doc.end()
+
+    return outputPath;
+
 }
 
 
@@ -210,9 +231,9 @@ export const downloadProfile = async (req,res) => {
                 
         const userProfiles = await Profile.findOne({userId:user_id}).populate('userId','name username email profilePicture');
 
-        let a = await convetUserDataToPDF(userProfile)
+        let outputPath = await convetUserDataToPDF(userProfile)
 
-        return res.json({message:a})
+        return res.json({message:outputPath})
 
 
 

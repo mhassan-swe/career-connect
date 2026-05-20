@@ -8,12 +8,11 @@ import userRouter from "./routes/user.routes.js"
 dotenv.config();
 
 const app = express();
-
 app.use(express.json());
 
 app.use(postRouter)
 app.use(userRouter)
-
+app.use(express.static('/uplods'))
 app.use(cors());
 
 
