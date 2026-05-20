@@ -18,7 +18,7 @@ const convertUserDataToPDF = (userData) => {
 
     doc.pipe(stream)
 
-    doc.image(`/uploads${userData,userId,profilePicture}`,{align:"center", width:100 })
+    doc.image(`/uploads/${userData.userId.profilePicture}`,{align:"center", width:100 })
     doc.fontSize(14).text(`Name :${userData.userId.name}`)
     doc.fontSize(14).text(`UserName :${userData.userId.userName}`)
     doc.fontSize(14).text(`Email :${userData.userId.email}`)
@@ -30,7 +30,7 @@ const convertUserDataToPDF = (userData) => {
     doc.fontSize(14).text(`Past Work :`)
     userData.pastWork.forEach((work,index) => {
         doc.fontSize(14).text(`Company Name :${work.company}`);
-        doc.fontSize(14).text(`Postion :${work.Position}`);
+        doc.fontSize(14).text(`Postion :${work.position}`);
         doc.fontSize(14).text(`Years :${work.years}`);
     });
 
@@ -228,15 +228,19 @@ export const getAllUsersProfile = async (req,res) => {
 export const downloadProfile = async (req,res) => {
     try{
         const user_id = req.query.id;
-                
+
+         if(!user_id){
+            return res.status(400).json({message:"User id required"});
+        }
+       
         const userProfile = await Profile.findOne({userId:user_id}).populate('userId','name username email profilePicture');
 
         let outputPath = await convertUserDataToPDF(userProfile)
-
-        return res.json({message:outputPath})
-
-
+        
+        return res.download(outputPath)
 
     }
-    catch(error){}
+    catch(error){
+        res.status(500).json({message:error.message})
+    }
 }
