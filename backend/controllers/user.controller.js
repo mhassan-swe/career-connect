@@ -3,40 +3,46 @@ import User from "../models/user.model.js"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
 import { createWriteStream } from "fs"
+import path from "path"
 
 import PDFDocument from "pdfkit"
-import fs from "fs"
+import fs from "fs"   
 
 
 
 const convertUserDataToPDF = (userData) => {
-    const doc =new PDFDocument()
+    return new Promise((resolve, reject) => {
+        const doc = new PDFDocument()
 
-    const outputPath = crypto.randomBytes(32).toString('hex') + '.pdf'
+        const outputPath = crypto.randomBytes(32).toString('hex') + '.pdf'
 
-    const stream = createWriteStream('./uploads/' + outputPath)
+        const stream = createWriteStream(path.join(process.cwd(), 'uploads', outputPath))
 
-    doc.pipe(stream)
+        stream.on('finish', () => resolve(outputPath))
+        stream.on('error', reject)
 
-    doc.image(`/uploads/${userData.userId.profilePicture}`,{align:"center", width:100 })
-    doc.fontSize(14).text(`Name :${userData.userId.name}`)
-    doc.fontSize(14).text(`UserName :${userData.userId.userName}`)
-    doc.fontSize(14).text(`Email :${userData.userId.email}`)
-    doc.fontSize(14).text(`Bio :${userData.userId.bio}`)
-    doc.fontSize(14).text(`Current Postion :${userData.userId.currentPost}`)
+        doc.pipe(stream)
+
+        if (userData.userId.profilePicture) {
+            doc.image(path.join(process.cwd(), 'uploads', userData.userId.profilePicture), { align: "center", width: 100 })
+        }
+        doc.fontSize(14).text(`Name :${userData.userId.name}`)
+        doc.fontSize(14).text(`UserName :${userData.userId.userName}`)
+        doc.fontSize(14).text(`Email :${userData.userId.email}`)
+        doc.fontSize(14).text(`Bio :${userData.userId.bio}`)
+        doc.fontSize(14).text(`Current Postion :${userData.userId.currentPost}`)
 
 
 
-    doc.fontSize(14).text(`Past Work :`)
-    userData.pastWork.forEach((work,index) => {
-        doc.fontSize(14).text(`Company Name :${work.company}`);
-        doc.fontSize(14).text(`Postion :${work.position}`);
-        doc.fontSize(14).text(`Years :${work.years}`);
-    });
+        doc.fontSize(14).text(`Past Work :`)
+        userData.pastWork.forEach((work,index) => {
+            doc.fontSize(14).text(`Company Name :${work.company}`);
+            doc.fontSize(14).text(`Postion :${work.position}`);
+            doc.fontSize(14).text(`Years :${work.years}`);
+        });
 
-    doc.end()
-
-    return outputPath;
+        doc.end()
+    })
 
 }
 
@@ -227,7 +233,7 @@ export const getAllUsersProfile = async (req,res) => {
 
 export const downloadProfile = async (req,res) => {
     try{
-        const user_id = req.query.id;
+        const user_id = req.query.id || req.query.userId || req.body?.id || req.body?.userId;
 
          if(!user_id){
             return res.status(400).json({message:"User id required"});
@@ -235,9 +241,13 @@ export const downloadProfile = async (req,res) => {
        
         const userProfile = await Profile.findOne({userId:user_id}).populate('userId','name username email profilePicture');
 
+        if (!userProfile) {
+            return res.status(404).json({message:"User profile not found"});
+        }
+
         let outputPath = await convertUserDataToPDF(userProfile)
-        
-        return res.download(outputPath)
+
+        return res.download(path.join(process.cwd(), 'uploads', outputPath))
 
     }
     catch(error){

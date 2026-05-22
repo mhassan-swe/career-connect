@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use(postRouter)
 app.use(userRouter)
-app.use(express.static('/uplods'))
+app.use(express.static('./uploads'))
 app.use(cors());
 
 
